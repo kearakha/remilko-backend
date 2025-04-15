@@ -22,7 +22,7 @@ class RecipeController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $validated = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -37,14 +37,11 @@ class RecipeController extends Controller
             'comment' => 'nullable|string',
         ]);
 
-        if ($validated->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validated->errors()
-            ], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $recipe = Recipe::create($validated);
+        $recipe = Recipe::create($validator->validated());
 
         return response()->json([
             'message' => 'Recipe created',
@@ -58,7 +55,7 @@ class RecipeController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $recipe = Recipe::with('steps')->find($id);
+        $recipe = Recipe::with('recipeStep')->find($id);
 
         if (!$recipe) {
             return response()->json(['message' => 'Recipe not found'], 404);
@@ -82,7 +79,7 @@ class RecipeController extends Controller
             ], 404);
         }
 
-        $validated = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'user_id' => 'sometimes|required|exists:users,id',
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|nullable|string',
@@ -97,12 +94,14 @@ class RecipeController extends Controller
             'comment' => 'sometimes|nullable|string',
         ]);
 
-        if ($validated->fails()) {
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'message' => $validated->errors()
+                'message' => $validator->errors()
             ], 422);
         }
+
+        $validated = $validator->validated();
 
         $recipe->update($validated);
 
