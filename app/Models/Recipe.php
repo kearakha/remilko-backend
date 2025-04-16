@@ -49,7 +49,7 @@ class Recipe extends Model
 
     public function recipeNutrition()
     {
-        return $this->hasOne(RecipeNutrition::class, 'recipe_id', 'id');
+        return $this->hasMany(RecipeNutrition::class, 'recipe_id', 'id');
     }
 
     public function recook()

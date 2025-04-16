@@ -14,4 +14,3 @@ class Ingredient extends Model
         return $this->hasMany(RecipeIngredient::class, 'ingredient_id', 'id');
     }
 }
-
