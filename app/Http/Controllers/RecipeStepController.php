@@ -10,8 +10,13 @@ class RecipeStepController extends Controller
 {
     public function index($recipe_id)
     {
-        $recipe = Recipe::find0rfail($recipe_id);
-        return response()->json($recipe->steps, 200);
+        $recipe = Recipe::findOrfail($recipe_id);
+
+        return response()->json([
+            'recipe_id' => $recipe->id,
+            'steps' => $recipe->recipeStep,
+            200
+        ]);
     }
 
     public function store(Request $request, $recipe_id)
@@ -25,7 +30,7 @@ class RecipeStepController extends Controller
 
         $recipe = Recipe::findOrFail($recipe_id);
 
-        $step = $recipe->steps()->create($request->all());
+        $step = $recipe->recipeStep()->create($request->all());
 
         return response()->json($step, 201);
     }
@@ -39,14 +44,13 @@ class RecipeStepController extends Controller
 
     public function update(Request $request, $recipe_id, $id)
     {
+        $step = RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id);
+
         $request->validate([
-            'recipe_id' => 'required|exists:recipes,id',
             'step_number' => 'required|integer',
             'step_description' => 'required|string',
             'photo_step' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
-        $step = RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id);
 
         $step->update($request->all());
 
