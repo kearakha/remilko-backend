@@ -10,7 +10,6 @@ class RecipeTool extends Model
     protected $fillable = [
         'recipe_id',
         'tool_name',
-        'photo_tool',
         'created_at',
         'updated_at'
     ];
@@ -19,5 +18,4 @@ class RecipeTool extends Model
     {
         return $this->belongsTo(Recipe::class, 'recipe_id', 'id');
     }
-
 }

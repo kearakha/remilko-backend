@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\RecipeIngredient;
+use Illuminate\Support\Facades\Validator;
 
 class RecipeIngredientController extends Controller
 {
@@ -27,16 +28,26 @@ class RecipeIngredientController extends Controller
      */
     public function store(Request $request, $recipe_id)
     {
-        $request->validate([
-            'recipe_id' => 'required|exists:recipes,id',
+        $recipe = Recipe::findOrFail($recipe_id);
+
+        $validator = Validator::make($request->all(), [
             'ingredient_name' => 'required|string|max:255',
-            'ingredient_value' => 'required|numeric',
+            'ingredient_amount' => 'required|numeric',
             'ingredient_unit' => 'required|string|max:255',
         ]);
 
-        $recipe = Recipe::findOrFail($recipe_id);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
-        $ingredient = $recipe->recipeIngredient()->create($request->all());
+        $validated = $validator->validated();
+
+        $ingredient = RecipeIngredient::create([
+            'recipe_id' => $recipe->id,
+            'ingredient_name' => $validated['ingredient_name'],
+            'ingredient_amount' => $validated['ingredient_amount'],
+            'ingredient_unit' => $validated['ingredient_unit'],
+        ]);
 
         return response()->json($ingredient, 201);
     }
@@ -58,13 +69,19 @@ class RecipeIngredientController extends Controller
     {
         $ingredient = RecipeIngredient::where('recipe_id', $recipe_id)->findOrFail($id);
 
-        $request->validate([
-            'ingredient_name' => 'required|string|max:255',
-            'ingredient_value' => 'required|numeric',
-            'ingredient_unit' => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'ingredient_name' => 'sometimes|required|string|max:255',
+            'ingredient_value' => 'sometimes|required|numeric',
+            'ingredient_unit' => 'sometimes|required|string|max:255',
         ]);
 
-        $ingredient->update($request->all());
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $validated = $validator->validated();
+
+        $ingredient->update($validated);
 
         return response()->json($ingredient, 200);
     }

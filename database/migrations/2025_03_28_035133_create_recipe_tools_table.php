@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('recipe_id')->constrained()->cascadeOnDelete();
             $table->string('tool_name');
-            $table->text('photo_tool')->nullable();
             $table->timestamps();
         });
     }

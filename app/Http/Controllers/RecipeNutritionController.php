@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\RecipeNutrition;
+use Illuminate\Support\Facades\Validator;
 
 class RecipeNutritionController extends Controller
 {
@@ -26,17 +27,31 @@ class RecipeNutritionController extends Controller
      */
     public function store(Request $request, $recipe_id)
     {
-        $request->validate([
+        $recipe = Recipe::findOrFail($recipe_id);
+
+        $validator = Validator::make($request->all(), [
             'nutrition_name' => 'required|string|max:255',
             'nutrition_value' => 'required|numeric',
             'nutrition_unit' => 'required|string|max:255',
         ]);
 
-        $recipe = Recipe::findOrFail($recipe_id);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
-        $nutrition = $recipe->recipeNutrition()->create($request->all());
+        $validated = $validator->validated();
 
-        return response()->json($nutrition, 201);
+        $nutrition = RecipeNutrition::create([
+            'recipe_id' => $recipe->id,
+            'nutrition_name' => $validated['nutrition_name'],
+            'nutrition_value' => $validated['nutrition_value'],
+            'nutrition_unit' => $validated['nutrition_unit'],
+        ]);
+
+        return response()->json([
+            'recipe_id' => $recipe->id,
+            'nutrition' => $nutrition,
+        ], 201);
     }
 
     /**
@@ -56,15 +71,24 @@ class RecipeNutritionController extends Controller
     {
         $nutrition = RecipeNutrition::where('recipe_id', $recipe_id)->findOrFail($id);
 
-        $request->validate([
-            'nutrition_name' => 'required|string|max:255',
-            'nutrition_value' => 'required|numeric',
-            'nutrition_unit' => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'nutrition_name' => 'sometimes|required|string|max:255',
+            'nutrition_value' => 'sometimes|required|numeric',
+            'nutrition_unit' => 'sometimes|required|string|max:255',
         ]);
 
-        $nutrition->update($request->all());
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
-        return response()->json($nutrition, 200);
+        $validated = $validator->validated();
+
+        $nutrition->update($validated);
+
+        return response()->json([
+            'recipe_id' => $recipe_id,
+            'nutrition' => $nutrition,
+        ])->setStatusCode(200, 'Nutrition updated successfully');
     }
 
     /**

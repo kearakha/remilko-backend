@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias(['jwt.auth', Tymon\JWTAuth\Providers\Auth\Illuminate::class]);
+        $middleware->alias(['role', App\Http\Middleware\CheckRole::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

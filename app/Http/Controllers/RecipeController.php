@@ -6,24 +6,27 @@ use App\Models\Recipe;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class RecipeController extends Controller
 {
     public function index()
     {
         $recipe = Recipe::all();
-        // $recipe = Recipe::with('steps')->get();
-        return response()->json($recipe, 200);
+        return response()->json([
+            'user' => JWTAuth::user(),
+            $recipe,
+            200
+        ]);
     }
 
     public function store(Request $request)
     {
-        if (!in_array(JWTAuth::user()->role, ['admin'])) {
+        if (!in_array(JWTAuth::user()->role, ['admin', 'content_creator'])) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'rating' => 'nullable|numeric|min:0|max:5',
@@ -41,7 +44,29 @@ class RecipeController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $recipe = Recipe::create($validator->validated());
+        $validated = $validator->validated();
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images'), $filename);
+            $validated['photo'] = $filename;
+        }
+
+        $recipe = Recipe::create([
+            'user_id' => Auth::user()->id,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'rating' => $validated['rating'],
+            'price_estimate' => $validated['price_estimate'],
+            'cook_time' => $validated['cook_time'],
+            'portion_size' => $validated['portion_size'],
+            'category' => $validated['category'],
+            'label' => $validated['label'],
+            'photo' => $validated['photo'],
+            'url_video' => $validated['url_video'],
+            'comment' => $validated['comment'],
+        ]);
 
         return response()->json([
             'message' => 'Recipe created',
@@ -66,7 +91,7 @@ class RecipeController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!in_array(JWTAuth::user()->role, ['admin'])) {
+        if (!in_array(JWTAuth::user()->role, ['admin', 'content_creator'])) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -80,7 +105,6 @@ class RecipeController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'sometimes|required|exists:users,id',
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|nullable|string',
             'rating' => 'sometimes|nullable|numeric|min:0|max:5',
@@ -103,7 +127,18 @@ class RecipeController extends Controller
 
         $validated = $validator->validated();
 
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images'), $filename);
+            $validated['photo'] = $filename;
+        }
+
+        // dd($validated);
+
         $recipe->update($validated);
+
+        // dd($recipe);
 
         return response()->json([
             'status' => 'success',
