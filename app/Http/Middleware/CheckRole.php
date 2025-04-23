@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class CheckRole
 {
@@ -16,13 +16,14 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        $user = JWTAuth::user()->role;
+        $user = JWTAuth::parseToken()->authenticate();
 
-        if (!$user || !in_array($user, $roles)) {
+        if (!$user || !in_array($user->role, $roles)) {
             return response()->json([
-                'message' => 'Unauthorized',
-                'status' => 403,
-            ]);
+                'message' => 'Unauthorized - role mismatch',
+                'your_role' => $user->role,
+                'allowed_roles' => $roles,
+            ], 403);
         }
 
         return $next($request);

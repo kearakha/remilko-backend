@@ -1,9 +1,6 @@
 <?php
 
-use Illuminate\Container\Attributes\Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\RecipeStepController;
 use App\Http\Controllers\RecipeNutritionController;

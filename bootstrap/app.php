@@ -3,7 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Tymon\JWTAuth\Http\Middleware\Authenticate;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,9 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias(['jwt.auth', Tymon\JWTAuth\Providers\Auth\Illuminate::class]);
-        $middleware->alias(['role', App\Http\Middleware\CheckRole::class]);
+        $middleware->alias([
+            'auth.jwt' => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\Authenticate::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
+        ]);
     })
+    ->withProviders([
+        // JWTAuth Service Provider
+        \PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider::class
+    ])
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
