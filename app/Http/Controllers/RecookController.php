@@ -21,9 +21,9 @@ class RecookController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show($recipe_id, $id)
     {
-        $recook = Recook::with('recipe')->findOrFail($id);
+        $recook = Recook::where('recipe_id', $recipe_id)->findOrFail($id);
 
         if (!$recook) {
             return response()->json([
@@ -38,7 +38,7 @@ class RecookController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $recipe_id)
     {
         $user = JWTAuth::user();
 
@@ -58,29 +58,30 @@ class RecookController extends Controller
         if ($request->hasFile('photo_recook')) {
             $file = $request->file('photo_recook');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images'), $filename);
+            $file->move(public_path('images/recook'), $filename);
             $validated['photo_recook'] = $filename;
         }
 
         $recook = Recook::create([
             'user_id' => $user->id,
-            'recipe_id' => $request->input('recipe_id'),
+            'recipe_id' => $recipe_id,
             'photo_recook' => $validated['photo_recook'],
             'difficulty' => $validated['difficulty'],
             'taste' => $validated['taste'],
             'description' => $validated['description'],
+            'status' => 'Menunggu',
         ]);
 
         return response()->json([
             'status' => 'Success',
-            'message' => 'Recook created successfully',
+            'message' => 'Recook created successfully, waiting for admin approval',
             'recook' => $recook,
         ], 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $recipe_id, $id)
     {
-        $recook = Recook::findOrFail($id);
+        $recook = Recook::where('recipe_id', $recipe_id)->findOrFail($id);
 
         if (!$recook) {
             return response()->json([
@@ -105,7 +106,7 @@ class RecookController extends Controller
         if ($request->hasFile('photo_recook')) {
             $file = $request->file('photo_recook');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images'), $filename);
+            $file->move(public_path('images/recook'), $filename);
             $recook->photo_recook = $filename;
         }
 
@@ -118,9 +119,9 @@ class RecookController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    public function destroy($recipe_id, $id)
     {
-        $recook = Recook::findOrFail($id);
+        $recook = Recook::where('recipe_id', $recipe_id)->findOrFail($id);
 
         if (!$recook) {
             return response()->json([

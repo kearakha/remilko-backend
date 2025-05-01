@@ -29,7 +29,7 @@ class FavoriteController extends Controller
 
         $favorite = Favorite::create([
             'user_id' => $user->id,
-            'recipe_id' => $recipe,
+            'recipe_id' => $recipe->id,
         ]);
 
         return response()->json([
@@ -39,10 +39,10 @@ class FavoriteController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    public function destroy($recipe_id)
     {
         $user = JWTAuth::user();
-        $favorite = Favorite::where('user_id', $user->id)->where('id', $id)->first();
+        $favorite = Favorite::where('user_id', $user->id)->where('recipe_id', $recipe_id)->first();
 
         if (!$favorite) {
             return response()->json([

@@ -39,7 +39,7 @@ class RecipeStepController extends Controller
         if ($request->hasFile('photo_step')) {
             $file = $request->file('photo_step');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images'), $filename);
+            $file->move(public_path('images/recipe/step'), $filename);
             $validated['photo_step'] = $filename;
         }
 
@@ -86,7 +86,7 @@ class RecipeStepController extends Controller
         if ($request->hasFile('photo_step')) {
             $file = $request->file('photo_step');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images'), $filename);
+            $file->move(public_path('images/recipe/step'), $filename);
             $validated['photo_step'] = $filename;
         }
 

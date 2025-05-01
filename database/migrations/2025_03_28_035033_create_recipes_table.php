@@ -25,6 +25,7 @@ return new class extends Migration
             $table->text('photo')->nullable();
             $table->text('url_video')->nullable();
             $table->text('comment')->nullable();
+            $table->boolean('is_recommended')->default(false);
             $table->timestamps();
         });
     }

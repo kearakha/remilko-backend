@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth.jwt' => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\Authenticate::class,
             'role' => \App\Http\Middleware\CheckRole::class,
+
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'creator' => \App\Http\Middleware\ContentCreatorMiddleware::class,
+            'user' => \App\Http\Middleware\UserMiddleware::class,
         ]);
     })
     ->withProviders([

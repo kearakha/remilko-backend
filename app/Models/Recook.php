@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Recook extends Model
 {
-    protected $table = 'recook';
+    protected $table = 'recooks';
     protected $fillable = [
         'recipe_id',
         'user_id',
-        'recook_description',
         'photo_recook',
-        'rating',
+        'difficulty',
+        'taste',
+        'description',
         'created_at',
         'updated_at'
     ];

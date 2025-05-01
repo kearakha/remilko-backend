@@ -22,10 +22,6 @@ class RecipeController extends Controller
 
     public function store(Request $request)
     {
-        if (!in_array(JWTAuth::user()->role, ['admin', 'content_creator'])) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -49,7 +45,7 @@ class RecipeController extends Controller
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images'), $filename);
+            $file->move(public_path('images/recipe'), $filename);
             $validated['photo'] = $filename;
         }
 
@@ -76,10 +72,6 @@ class RecipeController extends Controller
 
     public function show($id)
     {
-        if (!in_array(JWTAuth::user()->role, ['admin', 'user'])) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $recipe = Recipe::with('recipeStep')->find($id);
 
         if (!$recipe) {
@@ -91,10 +83,6 @@ class RecipeController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!in_array(JWTAuth::user()->role, ['admin', 'content_creator'])) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $recipe = Recipe::find($id);
 
         if (!$recipe) {
@@ -130,7 +118,7 @@ class RecipeController extends Controller
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images'), $filename);
+            $file->move(public_path('images/recipe'), $filename);
             $validated['photo'] = $filename;
         }
 

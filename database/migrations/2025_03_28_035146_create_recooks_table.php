@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('difficulty', ['Mudah', 'Sedang', 'Sulit']);
             $table->enum('taste', ['Enak', 'Biasa', 'Tidak Enak']);
             $table->text('description');
+            $table->enum('status', ['Menunggu', 'Diterima', 'Ditolak'])->default('Menunggu');
             $table->timestamps();
         });
     }
