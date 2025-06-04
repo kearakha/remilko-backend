@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Favorite extends Model
 {
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $table = 'favorites';
     protected $fillable = [
+        'id',
         'recipe_id',
         'user_id',
         'created_at',

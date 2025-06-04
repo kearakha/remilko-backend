@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('recipes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->uuid('id')->primary();
+            $table->uuid('user_id');
             $table->string('title');
             $table->text('description')->nullable();
             $table->float('rating')->default(0);
@@ -27,6 +27,9 @@ return new class extends Migration
             $table->text('comment')->nullable();
             $table->boolean('is_recommended')->default(false);
             $table->timestamps();
+
+            //foreign
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

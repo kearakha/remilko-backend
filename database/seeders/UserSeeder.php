@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'id' => Str::uuid()->toString(),
+                'id' => Str::random(8),
                 'name' => 'Admin User',
                 'email' => 'admin@example.com',
                 'password' => Hash::make('password123'),
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id' => Str::uuid()->toString(),
+                'id' => Str::random(8),
                 'name' => 'Recipe Creator',
                 'email' => 'creator@example.com',
                 'password' => Hash::make('password123'),
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id' => Str::uuid()->toString(),
+                'id' => Str::random(8),
                 'name' => 'Regular User',
                 'email' => 'user@example.com',
                 'password' => Hash::make('password123'),

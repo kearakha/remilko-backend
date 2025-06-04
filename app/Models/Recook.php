@@ -9,8 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Recook extends Model
 {
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $table = 'recooks';
     protected $fillable = [
+        'id',
         'recipe_id',
         'user_id',
         'photo_recook',

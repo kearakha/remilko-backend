@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use App\Models\Recook;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class RecookController extends Controller
 {
@@ -63,6 +64,7 @@ class RecookController extends Controller
         }
 
         $recook = Recook::create([
+            'id' => Str::random(8),
             'user_id' => $user->id,
             'recipe_id' => $recipe_id,
             'photo_recook' => $validated['photo_recook'],

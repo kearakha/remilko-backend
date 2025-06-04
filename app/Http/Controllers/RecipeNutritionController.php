@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\RecipeNutrition;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class RecipeNutritionController extends Controller
 {
@@ -42,6 +43,7 @@ class RecipeNutritionController extends Controller
         $validated = $validator->validated();
 
         $nutrition = RecipeNutrition::create([
+            'id' => Str::random(8),
             'recipe_id' => $recipe->id,
             'nutrition_name' => $validated['nutrition_name'],
             'nutrition_value' => $validated['nutrition_value'],

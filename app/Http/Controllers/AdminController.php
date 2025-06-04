@@ -8,6 +8,7 @@ use App\Models\Recipe;
 use App\Models\Recook;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -92,6 +93,7 @@ class AdminController extends Controller
 
         if (!$creator) {
             $creator = User::create([
+                'id' => Str::random(8),
                 'email' => $request->email,
                 'name' => 'Content Creator',
                 'password' => Hash::make('password123'),

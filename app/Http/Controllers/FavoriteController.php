@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use App\Models\Favorite;
 use App\Models\Recipe;
+use Illuminate\Support\Str;
 
 class FavoriteController extends Controller
 {
@@ -28,6 +29,7 @@ class FavoriteController extends Controller
         $recipe = Recipe::findOrFail($recipe_id);
 
         $favorite = Favorite::create([
+            'id' => Str::random(8),
             'user_id' => $user->id,
             'recipe_id' => $recipe->id,
         ]);

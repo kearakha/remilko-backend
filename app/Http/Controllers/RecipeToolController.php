@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\RecipeTool;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class RecipeToolController extends Controller
 {
@@ -41,6 +42,7 @@ class RecipeToolController extends Controller
         $validated = $validator->validated();
 
         $tool = RecipeTool::create([
+            'id' => Str::random(8),
             'recipe_id' => $recipe->id,
             'tool_name' => $validated['tool_name'],
         ]);

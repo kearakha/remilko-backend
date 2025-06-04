@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Recipe extends Model
 {
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $table = 'recipes';
     protected $fillable = [
+        'id',
         'user_id',
         'title',
         'description',
@@ -34,7 +38,7 @@ class Recipe extends Model
 
     public function recipeStep()
     {
-        return $this->hasMany(RecipeStep::class, 'recipe_id', 'id');
+        return $this->hasMany(RecipeStep::class, 'recipe_id', 'id')->orderBy('step_number', 'asc');
     }
 
     public function recipeTool()

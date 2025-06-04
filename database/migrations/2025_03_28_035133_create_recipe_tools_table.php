@@ -12,10 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('recipe_tools', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('recipe_id')->constrained()->cascadeOnDelete();
+            $table->uuid('id')->primary();
+            $table->uuid('recipe_id');
             $table->string('tool_name');
             $table->timestamps();
+
+            $table->foreign('recipe_id')->references('id')->on('recipes')->onDelete('cascade');
         });
     }
 

@@ -36,7 +36,7 @@ class AuthController extends Controller
         }
 
         $user = User::create([
-            'id' => Str::uuid()->toString(),
+            'id' => Str::random(8),
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
@@ -75,7 +75,9 @@ class AuthController extends Controller
 
     public function user()
     {
-        return response()->json(JWTAuth::user());
+        $user = JWTAuth::user();
+
+        return response()->json($user);
     }
 
     public function logout()

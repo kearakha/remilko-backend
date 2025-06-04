@@ -12,12 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('recipe_steps', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('recipe_id')->constrained()->cascadeOnDelete();
+            $table->uuid('id')->primary();
+            $table->uuid('recipe_id');
             $table->integer('step_number');
             $table->text('step_description');
             $table->text('photo_step')->nullable();
             $table->timestamps();
+
+            $table->foreign('recipe_id')->references('id')->on('recipes')->onDelete('cascade');
         });
     }
 

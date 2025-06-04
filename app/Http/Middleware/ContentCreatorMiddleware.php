@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 
 class ContentCreatorMiddleware
 {
@@ -16,12 +17,16 @@ class ContentCreatorMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = JWTAuth::parseToken()->authenticate();
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
 
-        if ($user && $user->role === 'creator') {
-            return $next($request);
+            if ($user && $user->role === 'creator') {
+                return $next($request);
+            }
+
+            return response()->json(['error' => 'Forbidden (Content Creator Only)'], 403);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        return response()->json(['error' => 'Unauthorized (Content Creator Only)'], 403);
     }
 }

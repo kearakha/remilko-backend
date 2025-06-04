@@ -9,16 +9,18 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'name',
         'email',
         'password',
         'role',
     ];
-
-    use Notifiable;
 
     public function getJWTIdentifier()
     {

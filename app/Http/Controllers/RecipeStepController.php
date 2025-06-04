@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\RecipeStep;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class RecipeStepController extends Controller
 {
@@ -44,6 +45,7 @@ class RecipeStepController extends Controller
         }
 
         $step = RecipeStep::create([
+            'id' => Str::random(8),
             'recipe_id' => $recipe->id,
             'step_number' => $validated['step_number'],
             'step_description' => $validated['step_description'],

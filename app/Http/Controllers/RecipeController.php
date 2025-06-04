@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class RecipeController extends Controller
 {
@@ -50,6 +51,7 @@ class RecipeController extends Controller
         }
 
         $recipe = Recipe::create([
+            'id' => Str::random(8),
             'user_id' => Auth::user()->id,
             'title' => $validated['title'],
             'description' => $validated['description'],

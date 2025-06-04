@@ -8,12 +8,14 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('recipe_ingredients', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('recipe_id')->constrained('recipes')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->uuid('recipe_id');
             $table->string('ingredient_name');
             $table->integer('ingredient_amount');
             $table->string('ingredient_unit');
             $table->timestamps();
+
+            $table->foreign('recipe_id')->references('id')->on('recipes')->onDelete('cascade');
         });
     }
 
