@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RecipeToolResource;
 use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\RecipeTool;
@@ -16,17 +17,20 @@ class RecipeToolController extends Controller
     public function index($recipe_id)
     {
         $recipe = Recipe::findOrFail($recipe_id);
+        $tools = RecipeTool::where('recipe_id', $recipe->id)->get();
 
         return response()->json([
-            'recipe_id' => $recipe->id,
-            'tools' => $recipe->recipeTool,
-            200
-        ]);
+            'data' => [
+                'tools' => RecipeToolResource::collection($tools),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'List of tools',
+            ]
+        ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, $recipe_id)
     {
         $recipe = Recipe::findOrFail($recipe_id);
@@ -47,22 +51,34 @@ class RecipeToolController extends Controller
             'tool_name' => $validated['tool_name'],
         ]);
 
-        return response()->json($tool, 201);
+        return response()->json([
+            'data' => [
+                'tools' => new RecipeToolResource($tool),
+            ],
+            'meta' => [
+                'code' => 201,
+                'status' => 'success',
+                'message' => 'Tool created successfully',
+            ]
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($recipe_id, $id)
     {
         $tool = RecipeTool::where('recipe_id', $recipe_id)->findOrFail($id);
 
-        return response()->json($tool, 200);
+        return response()->json([
+            'data' => [
+                'tools' => new RecipeToolResource($tool),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Tool detail retrieved successfully',
+            ]
+        ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $recipe_id, $id)
     {
         $tool = RecipeTool::where('recipe_id', $recipe_id)->findOrFail($id);
@@ -76,21 +92,32 @@ class RecipeToolController extends Controller
         }
 
         $validated = $validator->validated();
-
         $tool->update($validated);
 
-        return response()->json($tool, 200);
+        return response()->json([
+            'data' => [
+                'tools' => new RecipeToolResource($tool),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Tool updated successfully',
+            ]
+        ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($recipe_id, $id)
     {
-        RecipeTool::where('recipe_id', $recipe_id)->findOrFail($id)->delete();
+        $tool = RecipeTool::where('recipe_id', $recipe_id)->findOrFail($id);
+        $tool->delete();
 
         return response()->json([
-            'message' => 'Tool deleted successfully'
+            'data' => null,
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Tool deleted successfully',
+            ]
         ], 200);
     }
 }

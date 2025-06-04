@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -45,9 +46,16 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
-            'user' => $user,
-            // 'token' => $token
-        ], 201);
+            "data" => [
+                'user' => UserResource::collection([$user]),
+            ],
+            "meta" => [
+                "code" => 200,
+                "status" => "success",
+                "message" => "User registered successfully",
+            ],
+            200
+        ]);
     }
 
     public function login(Request $request)
@@ -58,26 +66,39 @@ class AuthController extends Controller
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
-        $user = JWTAuth::user();
+        $userJWT = JWTAuth::user();
+        $user = User::where("id", $userJWT->id)->get();
 
         return response()->json([
-            'status' => 'Success',
-            'message' => 'Login Success',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
+            "data" => [
+                'user' => UserResource::collection($user),
+            ],
+            "meta" => [
+                "code" => 200,
+                "status" => "success",
+                "message" => "User logged in successfully",
             ],
             'token' => $token,
+            200
         ]);
     }
 
     public function user()
     {
-        $user = JWTAuth::user();
+        $userJWT = JWTAuth::user();
+        $user = User::where("id", $userJWT->id)->get();
 
-        return response()->json($user);
+        return response()->json([
+            "data" => [
+                'user' => UserResource::collection($user),
+            ],
+            "meta" => [
+                "code" => 200,
+                "status" => "success",
+                "message" => "User profile retrieved successfully",
+            ],
+            200
+        ]);
     }
 
     public function logout()
@@ -90,11 +111,14 @@ class AuthController extends Controller
     {
         $user = JWTAuth::user();
 
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
-            'password' => 'sometimes|required|string|min:6',
-            'photo_user' => 'sometimes|nullable|image|max:2048',
+            'photo_user' => 'nullable|image|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -103,22 +127,27 @@ class AuthController extends Controller
 
         $validated = $validator->validated();
 
-        if (isset($validated['password'])) {
-            $user->password = Hash::make($validated['password']);
-        }
-
         if ($request->hasFile('photo_user')) {
             $file = $request->file('photo_user');
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('images/profile/user'), $filename);
-            $user->photo_user = $filename;
+            $validated['photo_user'] = $filename;
+        } else {
+            unset($validated['photo_user']); // Remove if no file is uploaded
         }
 
         $user->update($validated);
 
         return response()->json([
-            'message' => 'Profile updated successfully',
-            'user' => $user
+            "data" => [
+                'user' => UserResource::collection([$user]),
+            ],
+            "meta" => [
+                "code" => 200,
+                "status" => "success",
+                "message" => "User profile updated successfully",
+            ],
+            200
         ]);
     }
 }

@@ -9,49 +9,9 @@ use App\Http\Controllers\RecipeToolController;
 use App\Http\Controllers\RecookController;
 
 Route::middleware(['role:creator'])->prefix('creator')->group(function () {
-    // Route::apiResource('recipes', RecipeController::class)->only([
-    //     'index',
-    //     'show',
-    //     'store',
-    //     'update',
-    //     'destroy'
-    // ]);
-    // Route::apiResource('recipes/{id}/steps', RecipeStepController::class)->only([
-    //     'index',
-    //     'store',
-    //     'show',
-    //     'update',
-    //     'destroy'
-    // ]);
-    // Route::apiResource('recipes/{id}/nutritions', RecipeNutritionController::class)->only([
-    //     'index',
-    //     'store',
-    //     'show',
-    //     'update',
-    //     'destroy'
-    // ]);
-    // Route::apiResource('recipes/{id}/ingredients', RecipeIngredientController::class)->only([
-    //     'index',
-    //     'store',
-    //     'show',
-    //     'update',
-    //     'destroy'
-    // ]);
-    // Route::apiResource('recipes/{id}/tools', RecipeToolController::class)->only([
-    //     'index',
-    //     'store',
-    //     'show',
-    //     'update',
-    //     'destroy'
-    // ]);
-
-    // Route::apiResource('recooks', RecookController::class)->only([
-    //     'index',
-    //     'show',
-    // ]);
-
     //recipe
     Route::get('/recipes', [RecipeController::class, 'index']);
+    Route::get('/recipes/filters', [RecipeController::class, 'filter']);
     Route::get('/recipes/{recipe_id}', [RecipeController::class, 'show']);
     Route::post('/recipes', [RecipeController::class, 'store']);
     Route::put('/recipes/{recipe_id}', [RecipeController::class, 'update']);
@@ -87,4 +47,8 @@ Route::middleware(['role:creator'])->prefix('creator')->group(function () {
 
     Route::get('/recipes/{recipe_id}/recooks', [RecookController::class, 'index']);
     Route::get('recipes/{recipe_id}/recooks/{id}', [RecookController::class, 'show']);
+
+    // Comments Routes
+    Route::get('/recipes/{recipe_id}/comments', [RecipeController::class, 'comments']);
+    Route::post('/recipes/{recipe_id}/comments', [RecipeController::class, 'addComment']);
 });

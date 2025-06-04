@@ -23,7 +23,6 @@ class Recipe extends Model
         'label',
         'photo',
         'url_video',
-        'comment',
     ];
 
     public function user()
@@ -59,5 +58,10 @@ class Recipe extends Model
     public function recook()
     {
         return $this->hasMany(Recook::class, 'recipe_id', 'id');
+    }
+
+    public function comment()
+    {
+        return $this->hasMany(Comment::class, 'recipe_id', 'id');
     }
 }

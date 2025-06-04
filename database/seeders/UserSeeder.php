@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
                 'email' => 'admin@example.com',
                 'password' => Hash::make('password123'),
                 'role' => 'admin', // Sesuaikan jika ada field role
-                'photo_user' => 'images1.png',
+                'photo_user' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
                 'email' => 'creator@example.com',
                 'password' => Hash::make('password123'),
                 'role' => 'creator',
-                'photo_user' => 'images2.png',
+                'photo_user' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -41,7 +41,7 @@ class UserSeeder extends Seeder
                 'email' => 'user@example.com',
                 'password' => Hash::make('password123'),
                 'role' => 'user',
-                'photo_user' => 'images3.png',
+                'photo_user' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RecipeStepResource;
 use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\RecipeStep;
@@ -12,14 +13,21 @@ class RecipeStepController extends Controller
 {
     public function index($recipe_id)
     {
-        $recipe = Recipe::findOrfail($recipe_id);
+        $recipe = Recipe::findOrFail($recipe_id);
+        $steps = RecipeStep::where('recipe_id', $recipe->id)->get();
 
         return response()->json([
-            'recipe_id' => $recipe->id,
-            'steps' => $recipe->recipeStep,
-            200
+            'data' => [
+                'steps' => RecipeStepResource::collection($steps),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'List of steps',
+            ]
         ]);
     }
+
 
     public function store(Request $request, $recipe_id)
     {
@@ -45,25 +53,39 @@ class RecipeStepController extends Controller
         }
 
         $step = RecipeStep::create([
-            'id' => Str::random(8),
+            'id' => Str::uuid(),
             'recipe_id' => $recipe->id,
             'step_number' => $validated['step_number'],
             'step_description' => $validated['step_description'],
-            'photo_step' => $validated['photo_step'],
+            'photo_step' => $validated['photo_step'] ?? null,
         ]);
 
         return response()->json([
-            'message' => 'Step created successfully',
-            'recipe_id' => $recipe->id,
-            'step' => $step,
-        ]);
+            'data' => [
+                'step' => new RecipeStepResource($step),
+            ],
+            'meta' => [
+                'code' => 201,
+                'status' => 'success',
+                'message' => 'Step created successfully',
+            ]
+        ], 201);
     }
 
     public function show($recipe_id, $id)
     {
         $step = RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id);
 
-        return response()->json($step, 200);
+        return response()->json([
+            'data' => [
+                'step' => new RecipeStepResource($step),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Step detail retrieved successfully',
+            ]
+        ], 200);
     }
 
     public function update(Request $request, $recipe_id, $id)
@@ -78,8 +100,7 @@ class RecipeStepController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()
+                'errors' => $validator->errors()
             ], 422);
         }
 
@@ -94,12 +115,30 @@ class RecipeStepController extends Controller
 
         $step->update($validated);
 
-        return response()->json($step, 200);
+        return response()->json([
+            'data' => [
+                'step' => new RecipeStepResource($step),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Step updated successfully',
+            ]
+        ], 200);
     }
 
     public function destroy($recipe_id, $id)
     {
-        RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id)->delete();
-        return response()->json(['message' => 'Step deleted'], 200);
+        $step = RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id);
+        $step->delete();
+
+        return response()->json([
+            'data' => null,
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Step deleted successfully',
+            ]
+        ], 200);
     }
 }
