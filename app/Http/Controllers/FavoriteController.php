@@ -13,12 +13,14 @@ class FavoriteController extends Controller
     public function index()
     {
         $user = JWTAuth::user();
-        $favorites = Favorite::with('recipe')->where('user_id', $user->id)->get();
 
         return response()->json([
-            'status' => 'Success',
-            'message' => 'Favorites retrieved successfully',
-            'favorites' => $favorites,
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'List of favorites',
+            ],
+            200
         ]);
     }
 
@@ -35,9 +37,11 @@ class FavoriteController extends Controller
         ]);
 
         return response()->json([
-            'status' => 'Success',
-            'message' => 'Recipe added to favorites successfully',
-            'favorite' => $favorite,
+            'meta' => [
+                'code' => 201,
+                'status' => 'success',
+                'message' => 'Favorite added successfully',
+            ],
         ]);
     }
 
@@ -56,8 +60,11 @@ class FavoriteController extends Controller
         $favorite->delete();
 
         return response()->json([
-            'status' => 'Success',
-            'message' => 'Favorite deleted successfully',
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Favorite removed successfully',
+            ],
         ]);
     }
 
@@ -68,6 +75,15 @@ class FavoriteController extends Controller
             ->where('recipe_id', $request->recipe_id)
             ->exists();
 
-        return response()->json(['favorited' => $exists]);
+        return response()->json([
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Check favorite status',
+            ],
+            'data' => [
+                'exists' => $exists,
+            ],
+        ]);
     }
 }

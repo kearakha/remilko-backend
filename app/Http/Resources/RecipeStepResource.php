@@ -21,8 +21,6 @@ class RecipeStepResource extends JsonResource
                 'step_number' => $this->step_number,
                 'step_description' => $this->step_description,
                 'photo_step' => $this->photo_step ? asset('images/recipe/step/' . $this->photo_step) : null,
-                'created_at' => $this->created_at,
-                'updated_at' => $this->updated_at,
             ];
     }
 }

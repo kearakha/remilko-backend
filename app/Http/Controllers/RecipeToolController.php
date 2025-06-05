@@ -112,7 +112,6 @@ class RecipeToolController extends Controller
         $tool->delete();
 
         return response()->json([
-            'data' => null,
             'meta' => [
                 'code' => 200,
                 'status' => 'success',

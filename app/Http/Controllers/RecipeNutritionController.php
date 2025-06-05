@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RecipeNutritionResource;
 use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\RecipeNutrition;
@@ -10,17 +11,23 @@ use Illuminate\Support\Str;
 
 class RecipeNutritionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    //blm
     public function index($recipe_id)
     {
         $recipe = Recipe::findOrfail($recipe_id);
+        $nutrition = RecipeNutrition::where('recipe_id', $recipe->id)->get();
 
         return response()->json([
-            'recipe_id' => $recipe->id,
-            'nutritions' => $recipe->recipeNutrition,
-        ], 200);
+            'data' => [
+                'nutrition' => RecipeNutritionResource::collection($nutrition),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'List of nutrition for recipe',
+            ],
+            200
+        ]);
     }
 
     /**
@@ -51,8 +58,14 @@ class RecipeNutritionController extends Controller
         ]);
 
         return response()->json([
-            'recipe_id' => $recipe->id,
-            'nutrition' => $nutrition,
+            'data' => [
+                'nutrition' => new RecipeNutritionResource($nutrition),
+            ],
+            'meta' => [
+                'code' => 201,
+                'status' => 'success',
+                'message' => 'Nutrition created successfully',
+            ]
         ], 201);
     }
 
@@ -63,7 +76,17 @@ class RecipeNutritionController extends Controller
     {
         $nutrition = RecipeNutrition::where('recipe_id', $recipe_id)->findOrFail($id);
 
-        return response()->json($nutrition, 200);
+        return response()->json([
+            'data' => [
+                'nutrition' => new RecipeNutritionResource($nutrition),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Nutrition retrieved successfully',
+            ],
+            200
+        ]);
     }
 
     /**
@@ -88,9 +111,16 @@ class RecipeNutritionController extends Controller
         $nutrition->update($validated);
 
         return response()->json([
-            'recipe_id' => $recipe_id,
-            'nutrition' => $nutrition,
-        ])->setStatusCode(200, 'Nutrition updated successfully');
+            'data' => [
+                'nutrition' => new RecipeNutritionResource($nutrition),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Nutrition updated successfully',
+            ],
+            200
+        ]);
     }
 
     /**
@@ -99,6 +129,13 @@ class RecipeNutritionController extends Controller
     public function destroy($recipe_id, $id)
     {
         RecipeNutrition::where('recipe_id', $recipe_id)->findOrFail($id)->delete();
-        return response()->json(['message' => 'Nutrition deleted'], 200);
+        return response()->json([
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Nutrition deleted successfully',
+            ],
+            200
+        ]);
     }
 }

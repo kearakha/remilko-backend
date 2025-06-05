@@ -20,11 +20,9 @@ return new class extends Migration
             $table->integer('price_estimate')->nullable();
             $table->integer('cook_time')->nullable();
             $table->string('portion_size')->nullable();
-            $table->enum('category', ['Sarapan', 'Makan Siang', 'Makan Malam', 'Salad', 'Snack', 'Hemat'])->default('Hemat')->nullable();
             $table->enum('label', ['Tanpa Babi', 'Halal', 'Vegetarian', 'Vegan', 'Gluten-Free', 'None'])->default('none');
             $table->text('photo')->nullable();
             $table->text('url_video')->nullable();
-            $table->text('comment')->nullable();
             $table->boolean('is_recommended')->default(false);
             $table->timestamps();
 

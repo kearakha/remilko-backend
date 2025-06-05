@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RecookResource;
 use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use App\Models\Recook;
@@ -16,9 +17,15 @@ class RecookController extends Controller
         $recooks = Recook::with('recipe')->where('user_id', $user->id)->get();
 
         return response()->json([
-            'status' => 'Success',
-            'message' => 'Recooks retrieved successfully',
-            'recooks' => $recooks,
+            'data' => [
+                'recooks' => RecookResource::collection($recooks),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'List of recooks',
+            ],
+            200
         ]);
     }
 
@@ -33,9 +40,15 @@ class RecookController extends Controller
             ], 404);
         }
         return response()->json([
-            'status' => 'Success',
-            'message' => 'Recook retrieved successfully',
-            'recook' => $recook,
+            'data' => [
+                'recook' => RecookResource::collection($recook),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Recook details retrieved successfully',
+            ],
+            200
         ]);
     }
 
@@ -75,9 +88,14 @@ class RecookController extends Controller
         ]);
 
         return response()->json([
-            'status' => 'Success',
-            'message' => 'Recook created successfully, waiting for admin approval',
-            'recook' => $recook,
+            'data' => [
+                'recook' => RecookResource::collection($recook),
+            ],
+            'meta' => [
+                'code' => 201,
+                'status' => 'success',
+                'message' => 'Recook created successfully',
+            ]
         ], 201);
     }
 
@@ -115,9 +133,15 @@ class RecookController extends Controller
         $recook->update($validated);
 
         return response()->json([
-            'status' => 'Success',
-            'message' => 'Recook updated successfully',
-            'recook' => $recook,
+            'data' => [
+                'recook' => RecookResource::collection($recook),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Recook updated successfully',
+            ],
+            200
         ]);
     }
 
@@ -135,8 +159,12 @@ class RecookController extends Controller
         $recook->delete();
 
         return response()->json([
-            'status' => 'Success',
-            'message' => 'Recook deleted successfully',
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Recook deleted successfully',
+            ],
+            200
         ]);
     }
 }

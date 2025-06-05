@@ -4,13 +4,11 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\CommentResource;
 use App\Http\Resources\RecipeNutritionResource;
 use App\Http\Resources\RecipeStepResource;
 use App\Http\Resources\RecipeToolResource;
 use App\Http\Resources\RecookResource;
 use App\Http\Resources\RecipeIngredientsResource;
-use App\Models\User;
 
 class RecipeDetailResource extends JsonResource
 {
@@ -36,7 +34,7 @@ class RecipeDetailResource extends JsonResource
             'tools' => RecipeToolResource::collection($this->whenLoaded('recipeTool')),
             'nutrition' => RecipeNutritionResource::collection($this->whenLoaded('recipeNutrition')),
             'steps' => RecipeStepResource::collection($this->whenLoaded('recipeStep')),
-            'comments' => CommentResource::collection($this->whenLoaded('comments')),
+            'comments' => RecipeCommentResource::collection($this->whenLoaded('comments')),
             'recooks' => RecookResource::collection($this->whenLoaded('recook')),
         ];
     }

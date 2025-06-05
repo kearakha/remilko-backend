@@ -2,9 +2,20 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Recipe;
+use App\Models\Recook;
 use Illuminate\Database\Seeder;
+use Database\Seeders\UserSeeder;
+use Database\Seeders\RecipeSeeder;
+use Database\Seeders\RecipeStepSeeder;
+use Database\Seeders\RecipeIngredientSeeder;
+use Database\Seeders\RecipeCategorySeeder;
+use Database\Seeders\RecipeToolSeeder;
+use Database\Seeders\RecipeNutritionSeeder;
+use Database\Seeders\CommentSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +24,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            UserSeeder::class,
+            RecipeSeeder::class,
+            RecipeStepSeeder::class,
+            RecipeIngredientSeeder::class,
+            RecipeCategorySeeder::class,
+            RecipeToolSeeder::class,
+            RecipeNutritionSeeder::class,
+            RecipeCommentSeeder::class,
+            RecookSeeder::class,
         ]);
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\RecipeIngredientController;
 use App\Http\Controllers\RecipeToolController;
 use App\Http\Controllers\RecookController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\RecipeCommentController;
 
 Route::middleware(['role:user'])->prefix('user')->group(function () {
 
@@ -39,8 +40,9 @@ Route::middleware(['role:user'])->prefix('user')->group(function () {
     Route::post('favorites/check', [FavoriteController::class, 'check']);
 
     // Comments Routes
-    Route::get('/recipes/{recipe_id}/comments', [RecipeController::class, 'comments']);
-    Route::post('/recipes/{recipe_id}/comments', [RecipeController::class, 'addComment']);
-    Route::put('/recipes/{recipe_id}/comments/{comment_id}', [RecipeController::class, 'updateComment']);
-    Route::delete('/recipes/{recipe_id}/comments/{comment_id}', [RecipeController::class, 'deleteComment']);
+    // Comments Routes
+    Route::post('/recipes/{recipe_id}/comments', [RecipeCommentController::class, 'addComment']);
+    Route::get('/recipes/{recipe_id}/comments', [RecipeCommentController::class, 'getComments']);
+    Route::put('/recipes/{recipe_id}/comments/{comment_id}', [RecipeCommentController::class, 'updateComment']);
+    Route::delete('/recipes/{recipe_id}/comments/{comment_id}', [RecipeCommentController::class, 'deleteComment']);
 });

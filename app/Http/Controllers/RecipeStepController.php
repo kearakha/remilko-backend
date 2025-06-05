@@ -13,6 +13,7 @@ class RecipeStepController extends Controller
 {
     public function index($recipe_id)
     {
+        //error
         $recipe = Recipe::findOrFail($recipe_id);
         $steps = RecipeStep::where('recipe_id', $recipe->id)->get();
 
@@ -52,8 +53,8 @@ class RecipeStepController extends Controller
             $validated['photo_step'] = $filename;
         }
 
-        $step = RecipeStep::create([
-            'id' => Str::uuid(),
+        $steps = RecipeStep::create([
+            'id' => Str::random(8),
             'recipe_id' => $recipe->id,
             'step_number' => $validated['step_number'],
             'step_description' => $validated['step_description'],
@@ -62,7 +63,7 @@ class RecipeStepController extends Controller
 
         return response()->json([
             'data' => [
-                'step' => new RecipeStepResource($step),
+                'step' => new RecipeStepResource($steps),
             ],
             'meta' => [
                 'code' => 201,
@@ -74,11 +75,11 @@ class RecipeStepController extends Controller
 
     public function show($recipe_id, $id)
     {
-        $step = RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id);
+        $steps = RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id);
 
         return response()->json([
             'data' => [
-                'step' => new RecipeStepResource($step),
+                'step' => new RecipeStepResource($steps),
             ],
             'meta' => [
                 'code' => 200,
@@ -90,7 +91,7 @@ class RecipeStepController extends Controller
 
     public function update(Request $request, $recipe_id, $id)
     {
-        $step = RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id);
+        $steps = RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id);
 
         $validator = Validator::make($request->all(), [
             'step_number' => 'sometimes|required|integer',
@@ -113,11 +114,11 @@ class RecipeStepController extends Controller
             $validated['photo_step'] = $filename;
         }
 
-        $step->update($validated);
+        $steps->update($validated);
 
         return response()->json([
             'data' => [
-                'step' => new RecipeStepResource($step),
+                'step' => new RecipeStepResource($steps),
             ],
             'meta' => [
                 'code' => 200,
@@ -129,11 +130,10 @@ class RecipeStepController extends Controller
 
     public function destroy($recipe_id, $id)
     {
-        $step = RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id);
-        $step->delete();
+        $steps = RecipeStep::where('recipe_id', $recipe_id)->findOrFail($id);
+        $steps->delete();
 
         return response()->json([
-            'data' => null,
             'meta' => [
                 'code' => 200,
                 'status' => 'success',

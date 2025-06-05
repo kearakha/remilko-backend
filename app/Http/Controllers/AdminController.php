@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RecipeResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Recipe;
@@ -21,10 +22,18 @@ class AdminController extends Controller
         $invitedCreators = User::where('role', 'creator')->get();
 
         return response()->json([
-            'total_recipes' => $totalRecipes,
-            'total_recooks' => $totalRecooks,
-            'pending_recooks' => $pendingRecooks,
-            'creators' => $invitedCreators
+            'data' => [
+                'total_recipes' => $totalRecipes,
+                'total_recooks' => $totalRecooks,
+                'pending_recooks' => $pendingRecooks,
+                'invited_creators' => $invitedCreators,
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Dashboard summary',
+            ],
+            200
         ]);
     }
 
@@ -35,7 +44,13 @@ class AdminController extends Controller
         $recook->status = 'Diterima';
         $recook = $recook->save();
 
-        return response()->json(['message' => 'Recook approved']);
+        return response()->json([
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Recook approved',
+            ],
+        ]);
     }
 
     public function rejectRecook($id)
@@ -44,7 +59,13 @@ class AdminController extends Controller
         $recook->status = 'Ditolak';
         $recook->save();
 
-        return response()->json(['message' => 'Recook rejected']);
+        return response()->json([
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Recook rejected',
+            ],
+        ]);
     }
 
     public function recentActivities()
@@ -63,8 +84,15 @@ class AdminController extends Controller
         $recipe->save();
 
         return response()->json([
-            'message' => 'Recipe recommendation status updated',
-            'recipe' => $recipe,
+            'data' => [
+                'recipe' => RecipeResource::collection($recipe),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Recipe recommendation status updated',
+            ],
+            200
         ]);
     }
 

@@ -60,8 +60,13 @@ class Recipe extends Model
         return $this->hasMany(Recook::class, 'recipe_id', 'id');
     }
 
-    public function comment()
+    public function recipeComment()
     {
-        return $this->hasMany(Comment::class, 'recipe_id', 'id');
+        return $this->hasMany(RecipeComment::class, 'recipe_id', 'id');
+    }
+
+    public function recipeCategory()
+    {
+        return $this->belongsTo(RecipeCategory::class, 'category_id', 'id');
     }
 }

@@ -7,20 +7,25 @@ use App\Models\Recipe;
 use App\Models\RecipeIngredient;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Http\Resources\RecipeIngredientsResource;
 
 class RecipeIngredientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    //blm
     public function index($recipe_id)
     {
         $recipe = Recipe::findOrFail($recipe_id);
+        $ingredients = RecipeIngredient::where('recipe_id', $recipe->id)->get();
 
         return response()->json([
-            'recipe_id' => $recipe->id,
-            'ingredients' => $recipe->recipeIngredient,
-            200
+            'data' => [
+                'ingredients' => RecipeIngredientsResource::collection($ingredients),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'List of ingredients for recipe',
+            ],
         ]);
     }
 
@@ -51,7 +56,17 @@ class RecipeIngredientController extends Controller
             'ingredient_unit' => $validated['ingredient_unit'],
         ]);
 
-        return response()->json($ingredient, 201);
+        return response()->json([
+            'data' => [
+                'ingredient' => new RecipeIngredientsResource($ingredient),
+            ],
+            'meta' => [
+                'code' => 201,
+                'status' => 'success',
+                'message' => 'Ingredient created successfully',
+            ],
+            201
+        ]);
     }
 
     /**
@@ -61,7 +76,17 @@ class RecipeIngredientController extends Controller
     {
         $ingredient = RecipeIngredient::where('recipe_id', $recipe_id)->findOrFail($id);
 
-        return response()->json($ingredient, 200);
+        return response()->json([
+            'data' => [
+                'ingredient' => new RecipeIngredientsResource($ingredient),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Ingredient retrieved successfully',
+            ],
+            200
+        ]);
     }
 
     /**
@@ -85,7 +110,17 @@ class RecipeIngredientController extends Controller
 
         $ingredient->update($validated);
 
-        return response()->json($ingredient, 200);
+        return response()->json([
+            'data' => [
+                'ingredient' => new RecipeIngredientsResource($ingredient),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Ingredient updated successfully',
+            ],
+            200
+        ]);
     }
 
     /**
@@ -96,8 +131,12 @@ class RecipeIngredientController extends Controller
         RecipeIngredient::where('recipe_id', $recipe_id)->findOrFail($id)->delete();
 
         return response()->json([
-            'message' => 'Ingredient deleted',
-            'status' => 200
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Ingredient deleted successfully',
+            ],
+            200
         ]);
     }
 }
