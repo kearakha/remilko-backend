@@ -17,7 +17,8 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             [
                 'id' => Str::random(8),
-                'name' => 'Admin User',
+                'username' => 'Admin',
+                'name' => 'Administrator',
                 'email' => 'admin@example.com',
                 'password' => Hash::make('password123'),
                 'role' => 'admin', // Sesuaikan jika ada field role
@@ -27,7 +28,8 @@ class UserSeeder extends Seeder
             ],
             [
                 'id' => Str::random(8),
-                'name' => 'Recipe Creator',
+                'username' => 'najwahajah',
+                'name' => 'Najwah Kamilah',
                 'email' => 'creator@example.com',
                 'password' => Hash::make('password123'),
                 'role' => 'creator',
@@ -37,7 +39,8 @@ class UserSeeder extends Seeder
             ],
             [
                 'id' => Str::random(8),
-                'name' => 'Regular User',
+                'username' => 'Hirarea',
+                'name' => 'Sabrina Carpenter',
                 'email' => 'user@example.com',
                 'password' => Hash::make('password123'),
                 'role' => 'user',

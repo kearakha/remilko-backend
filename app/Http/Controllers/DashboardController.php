@@ -19,9 +19,24 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
         $recommendedRecipes = Recipe::where('is_recommended', true)->take(5)->get();
-        $creatorRecipes = Recipe::whereHas('user', function ($q) {
-            $q->where('role', 'creator');
-        })->take(3)->get();
+        $creatorRecipes = Recipe::with('user')
+            ->whereHas('user', function ($q) {
+                $q->where('role', 'creator');
+            })
+            ->take(3)
+            ->get()
+            ->groupBy('user.id')
+            ->map(function ($recipes) {
+                $user = $recipes->first()->user;
+                return [
+                    'user_id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'photo_user' => $user->photo_user ? asset($user->photo_user) : null,
+                    'recipe_count' => $user->recipes()->count(),
+                    'latest_recipe' => new RecipeResource($recipes->first()),
+                ];
+            })->values();
         $latestRecooks = Recook::where('status', 'Diterima')->latest()->take(5)->get();
 
         return response()->json([

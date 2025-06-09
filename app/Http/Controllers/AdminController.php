@@ -101,6 +101,9 @@ class AdminController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users,email',
+            'username' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'password' => 'required|string|min:6',
         ]);
 
         if ($validator->fails()) {
@@ -123,8 +126,9 @@ class AdminController extends Controller
             $creator = User::create([
                 'id' => Str::random(8),
                 'email' => $request->email,
-                'name' => 'Content Creator',
-                'password' => Hash::make('password123'),
+                'username' => $validated['username'],
+                'name' => $validated['name'],
+                'password' => Hash::make($validated['password']),
                 'role' => 'creator',
                 'photo_user' => $photoname,
             ]);
