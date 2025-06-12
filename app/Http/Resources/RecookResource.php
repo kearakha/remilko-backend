@@ -16,15 +16,24 @@ class RecookResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'photo_recook' => $this->photo_recook ? asset($this->photo_recook) : null,
             'recipe_id' => $this->recipe_id,
             'user_id' => $this->user_id,
+            'username' => $this->whenLoaded('user', function () {
+                return $this->user->name ?? $this->user->username ?? 'Pengguna Tidak Dikenal';
+            }),
+            'recipe_id' => $this->recipe_id,
+            // Mengambil recipe_title dari relasi recipe
+            'recipe_title' => $this->whenLoaded('recipe', function () {
+                return $this->recipe->title ?? 'Resep Tidak Dikenal';
+            }),
+            'recook_photo' => $this->photo_recook ? asset('images/recook/' . $this->photo_recook) : null,
             'status' => $this->status,
-            'comment' => $this->comment,
+            'description' => $this->description,
+            'difficulty' => $this->difficulty,
+            'taste' => $this->taste,
+            'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'recipe' => new RecipeResource($this->whenLoaded('recipe')),
-            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

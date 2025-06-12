@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['admin', 'creator', 'user'])->default('user');
             $table->string('photo_user')->nullable();
+            $table->enum('status', ['Menunggu', 'Diterima', 'Ditolak']);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -23,10 +23,10 @@ class RecipeResource extends JsonResource
                 'price_estimate' => $this->price_estimate,
                 'cook_time' => $this->cook_time,
                 'portion_size' => $this->portion_size,
-                'category' => $this->category,
                 'label' => $this->label,
-                'photo' => $this->photo ? asset($this->photo) : null,
+                'photo' => $this->photo ? asset('/images/recipes/' . $this->photo) : null,
                 'url_video' => $this->url_video,
+                'is_recommended' => $this->is_recommended,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
             ];

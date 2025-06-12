@@ -41,7 +41,7 @@ class RecookController extends Controller
         }
         return response()->json([
             'data' => [
-                'recook' => RecookResource::collection($recook),
+                'recook' => new RecookResource($recook),
             ],
             'meta' => [
                 'code' => 200,
@@ -89,7 +89,7 @@ class RecookController extends Controller
 
         return response()->json([
             'data' => [
-                'recook' => RecookResource::collection($recook),
+                'recook' => new RecookResource($recook),
             ],
             'meta' => [
                 'code' => 201,
@@ -134,7 +134,7 @@ class RecookController extends Controller
 
         return response()->json([
             'data' => [
-                'recook' => RecookResource::collection($recook),
+                'recook' => new RecookResource($recook),
             ],
             'meta' => [
                 'code' => 200,

@@ -23,6 +23,11 @@ class Recipe extends Model
         'label',
         'photo',
         'url_video',
+        'is_recommended',
+    ];
+
+    protected $cast = [
+        'is_recommended' => 'boolean',
     ];
 
     public function user()
