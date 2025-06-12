@@ -16,6 +16,6 @@
 
     Jika ada pertanyaan, jangan ragu untuk menghubungi kami.
 
-    Terima Kasih,<br>
+    Terima Kasih,
     {{ config('app.name') }}
 </x-mail::message>

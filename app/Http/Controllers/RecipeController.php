@@ -105,7 +105,7 @@ class RecipeController extends Controller
             'recipeStep',
             'recipeTool',
             'recipeNutrition',
-            'comment.user',
+            'recipeComment.user',
             'recook.user',
         ])->findOrFail($id);
 
