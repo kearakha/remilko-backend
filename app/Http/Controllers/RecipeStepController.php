@@ -8,6 +8,7 @@ use App\Models\Recipe;
 use App\Models\RecipeStep;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class RecipeStepController extends Controller
 {
@@ -49,7 +50,8 @@ class RecipeStepController extends Controller
         if ($request->hasFile('photo_step')) {
             $file = $request->file('photo_step');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/recipe/step'), $filename);
+            // $file->move(public_path('images/recipe/step'), $filename);
+            Storage::disk('public')->put('image/repice/step' . $filename, $file);
             $validated['photo_step'] = $filename;
         }
 
@@ -110,7 +112,8 @@ class RecipeStepController extends Controller
         if ($request->hasFile('photo_step')) {
             $file = $request->file('photo_step');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/recipe/step'), $filename);
+            // $file->move(public_path('images/recipe/step'), $filename);
+            Storage::disk('public')->put('image/repice/step' . $filename, $file);
             $validated['photo_step'] = $filename;
         }
 

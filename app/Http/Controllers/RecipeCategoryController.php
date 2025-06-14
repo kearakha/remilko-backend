@@ -6,6 +6,7 @@ use App\Models\RecipeCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class RecipeCategoryController extends Controller
 {
@@ -57,7 +58,8 @@ class RecipeCategoryController extends Controller
         if ($request->hasFile('photo_category')) {
             $file = $request->file('photo_category');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/recipe/category'), $filename);
+            // $file->move(public_path('images/recipe/category'), $filename);
+            Storage::disk('public')->put('image/repice/category' . $filename, $file);
             $validated['photo_category'] = $filename;
         } else {
             $validated['photo_category'] = null; // Set to null if no file is uploaded

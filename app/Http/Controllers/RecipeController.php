@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Comment;
 use App\Http\Resources\RecipeDetailResource;
+use Illuminate\Support\Facades\Storage;
 
 class RecipeController extends Controller
 {
@@ -48,7 +49,6 @@ class RecipeController extends Controller
             'price_estimate' => 'nullable|integer',
             'cook_time' => 'nullable|integer',
             'portion_size' => 'nullable|string',
-            'category' => 'nullable|in:Sarapan, Makan Siang, Makan Malam, Salad, Snack',
             'Hemat',
             'label' => 'nullable|in:Tanpa Babi,Halal,Vegetarian,Vegan,Gluten-Free,None',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -64,7 +64,8 @@ class RecipeController extends Controller
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/recipe'), $filename);
+            // $file->move(public_path('images/recipe'), $filename);
+            Storage::disk('public')->put('image/repice/' . $filename, $file);
             $validated['photo'] = $filename;
         }
 
@@ -77,7 +78,6 @@ class RecipeController extends Controller
             'price_estimate' => $validated['price_estimate'],
             'cook_time' => $validated['cook_time'],
             'portion_size' => $validated['portion_size'],
-            'category' => $validated['category'],
             'label' => $validated['label'],
             'photo' => $validated['photo'],
             'url_video' => $validated['url_video'],
@@ -85,7 +85,7 @@ class RecipeController extends Controller
 
         return response()->json([
             "data" => [
-                "recipe" => RecipeResource::collection($recipe),
+                "recipe" => new RecipeResource($recipe),
             ],
             "meta" => [
                 "code" => 200,
@@ -159,7 +159,8 @@ class RecipeController extends Controller
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/recipe'), $filename);
+            // $file->move(public_path('images/recipe'), $filename);
+            Storage::disk('public')->put('image/repice/' . $filename, $file);
             $validated['photo'] = $filename;
         }
 

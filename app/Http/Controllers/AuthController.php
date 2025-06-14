@@ -10,6 +10,7 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -32,7 +33,8 @@ class AuthController extends Controller
         if ($request->hasFile('photo_user')) {
             $file = $request->file('photo_user');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/profile/user'), $filename);
+            // $file->move(public_path('images/profile/user'), $filename);
+            Storage::disk('public')->put('image/profile/user' . $filename, $file);
             $validated['photo_user'] = $filename;
         } else {
             $validated['photo_user'] = null; // Set default value if no file is uploaded
