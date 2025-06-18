@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RecipeIngredientsResource;
 use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Http\Resources\RecipeResource;
 use App\Http\Resources\RecookResource;
+use App\Http\Resources\UserResource;
 use App\Models\Recook;
+use App\Models\RecipeIngredient;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -51,6 +55,32 @@ class DashboardController extends Controller
                 'code' => 200,
                 'status' => 'success',
                 'message' => 'Berhasil mengambil data untuk dashboard',
+            ]
+        ]);
+    }
+
+    public function globalSearch(Request $request)
+    {
+        $q = $request->input('q');
+
+        $recipes = Recipe::where('title', 'like', "%{$q}%")->get();
+        $ingredients = RecipeIngredient::where('ingredient_name', 'like', "%{$q}%")->get();
+        $creators = User::where('role', 'creator')
+            ->where(function ($query) use ($q) {
+                $query->where('name', 'like', "%{$q}%")
+                    ->orWhere('email', 'like', "%{$q}%");
+            })->get();
+
+        return response()->json([
+            'data' => [
+                'recipes' => RecipeResource::collection($recipes),
+                'ingredients' => RecipeIngredientsResource::collection($ingredients),
+                'creators' => UserResource::collection($creators),
+            ],
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Hasil pencarian ditemukan'
             ]
         ]);
     }

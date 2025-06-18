@@ -18,6 +18,7 @@ Route::middleware('auth.jwt')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard/search', [DashboardController::class, 'globalSearch']);
     Route::get('/recipes/filters', [RecipeController::class, 'filter']);
 
     Route::middleware('admin')->group(function () {
